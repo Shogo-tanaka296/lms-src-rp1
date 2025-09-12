@@ -74,16 +74,19 @@
 	</insert>
 
 	<update id="update" parameterType="jp.co.sss.lms.entity.TStudentAttendance">
-		UPDATE t_student_attendance
-		SET
-			training_start_time = #{trainingStartTime},
-			training_end_time = #{trainingEndTime},
-			status = #{status},
-			note = #{note},
-			last_modified_user = #{lastModifiedUser},
-			last_modified_date = #{lastModifiedDate},
-			blank_time = #{blankTime}
-		WHERE student_attendance_id = #{studentAttendanceId}
+	UPDATE t_student_attendance
+	SET
+	training_start_time = #{trainingStartTime},
+	training_end_time = #{trainingEndTime},
+	status = #{status},
+	note = #{note},
+	last_modified_user = #{lastModifiedUser},
+	last_modified_date = #{lastModifiedDate},
+	blank_time = #{blankTime}
+	WHERE student_attendance_id = #{studentAttendanceId}
 	</update>
+	
+	<select id="notEnterCount" parameterType="jp.co.sss.lms.entity.TStudentAttendance">
 
+	</select>
 </mapper>

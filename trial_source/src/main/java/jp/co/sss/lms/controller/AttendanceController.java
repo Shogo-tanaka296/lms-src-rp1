@@ -1,6 +1,7 @@
 package jp.co.sss.lms.controller;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
 import jp.co.sss.lms.form.AttendanceForm;
+import jp.co.sss.lms.mapper.TStudentAttendanceMapper;
 import jp.co.sss.lms.service.StudentAttendanceService;
 import jp.co.sss.lms.util.Constants;
+import jp.co.sss.lms.util.DateUtil;
+import jp.co.sss.lms.util.LoginUserUtil;
 
 /**
  * 勤怠管理コントローラ
@@ -29,6 +33,14 @@ public class AttendanceController {
 	private StudentAttendanceService studentAttendanceService;
 	@Autowired
 	private LoginUserDto loginUserDto;
+	
+	//2025/09/12田中追加
+	@Autowired 
+	private LoginUserUtil loginUserUtil;
+	@Autowired
+	private DateUtil dateUtil;
+	@Autowired 
+	private TStudentAttendanceMapper  tStudentAttendanceMapprer; 
 
 	/**
 	 * 勤怠管理画面 初期表示
@@ -49,6 +61,38 @@ public class AttendanceController {
 
 		return "attendance/detail";
 	}
+	
+	/**
+	 * 勤怠管理画面 ログイン時
+	 * @author tanaka
+	 * 
+	 * 
+	 */
+	@RequestMapping(path = "/detail")
+	public void notEntryCheck(LoginUserDto loginUserDto) {
+		Integer lmsUserId = loginUserDto.getLmsUserId();
+		short deleteFlg = 0;
+		
+		//学生の場合
+		if(loginUserUtil.isStudent()) {
+			//SimpleDateFormattのフォーマットはtimestamp without time zoneか？
+			Date date = new Date();
+			String trainingDate = dateUtil.dateToString(date, "yyyy/MM/dd");
+			short deleteDeta = 0;
+			if(!tStudentAttendanceMapprer.notEnterCount(lmsUserId,trainingDate,deleteDeta)){
+				//ない場合
+			}else {//ある場合
+				
+			}
+			
+		} else {//学生じゃない場合
+			
+		}
+		
+		
+		
+	}
+	
 
 	/**
 	 * 勤怠管理画面 『出勤』ボタン押下
@@ -143,5 +187,6 @@ public class AttendanceController {
 
 		return "attendance/detail";
 	}
+	
 
 }
