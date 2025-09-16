@@ -1,5 +1,6 @@
 package jp.co.sss.lms.service;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -332,6 +333,20 @@ public class StudentAttendanceService {
 		}
 		// 完了メッセージ
 		return messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_UPDATE_NOTICE);
+	}
+	public boolean notEntryCheck(Integer lmsUserId,Timestamp trainingDate) {
+		Short deleteFlg = 0;
+		if(loginUserUtil.isStudent()) { //学生の場合
+			System.out.println(tStudentAttendanceMapper.notEnterCount(lmsUserId, trainingDate, deleteFlg));
+			if((tStudentAttendanceMapper.notEnterCount(lmsUserId, trainingDate, deleteFlg)) > 0) {
+				return true;
+			}else {
+				return false;
+			}
+		}else { //学生じゃない場合
+			return false;
+		}
+		
 	}
 
 }

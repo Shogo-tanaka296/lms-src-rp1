@@ -1,5 +1,6 @@
 package jp.co.sss.lms.mapper;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -69,7 +70,8 @@ public interface TStudentAttendanceMapper {
 	 * 勤怠情報（受講生入力）未入力件数取得
 	 * 
 	 */
-	Boolean notEnterCount(@Param("lmsUserId") Integer lmsUserId,@Param("trainingDate") String trainingDate,
-			@Param("deleteDeta")short deleteDeta);
+	Integer notEnterCount(@Param("lmsUserId") Integer lmsUserId,
+						@Param("trainingDate") Timestamp trainingDate,
+						@Param("deleteFlg")short deleteFlag);
 
 }

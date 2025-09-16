@@ -1,6 +1,8 @@
 package jp.co.sss.lms.controller;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
 import jp.co.sss.lms.form.AttendanceForm;
-import jp.co.sss.lms.mapper.TStudentAttendanceMapper;
 import jp.co.sss.lms.service.StudentAttendanceService;
 import jp.co.sss.lms.util.Constants;
 import jp.co.sss.lms.util.DateUtil;
@@ -33,14 +34,10 @@ public class AttendanceController {
 	private StudentAttendanceService studentAttendanceService;
 	@Autowired
 	private LoginUserDto loginUserDto;
-	
-	//2025/09/12田中追加
-	@Autowired 
-	private LoginUserUtil loginUserUtil;
 	@Autowired
 	private DateUtil dateUtil;
-	@Autowired 
-	private TStudentAttendanceMapper  tStudentAttendanceMapprer; 
+	@Autowired
+	private LoginUserUtil loginUserUtil;
 
 	/**
 	 * 勤怠管理画面 初期表示
@@ -54,43 +51,30 @@ public class AttendanceController {
 	@RequestMapping(path = "/detail", method = RequestMethod.GET)
 	public String index(Model model) {
 
+		
+		Integer lmsUserId = loginUserDto.getLmsUserId();
+		Date date = new Date();
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String fmtdate = fmt.format(date);
+		Timestamp trainingDate = dateUtil.stringToTimestamp(fmtdate);
+		
+//		System.out.println("コンソール表示テスト");
+//		System.out.println(studentAttendanceService.notEntryCheck(lmsUserId,trainingDate));
+		
+		if(studentAttendanceService.notEntryCheck(lmsUserId,trainingDate)) {
+			model.addAttribute("notEntryAlertMessage","過去日の勤怠に未入力があります。");
+		}else {
+			
+		}
+		
+		
 		// 勤怠一覧の取得
+	
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
 
 		return "attendance/detail";
-	}
-	
-	/**
-	 * 勤怠管理画面 ログイン時
-	 * @author tanaka
-	 * 
-	 * 
-	 */
-	@RequestMapping(path = "/detail")
-	public void notEntryCheck(LoginUserDto loginUserDto) {
-		Integer lmsUserId = loginUserDto.getLmsUserId();
-		short deleteFlg = 0;
-		
-		//学生の場合
-		if(loginUserUtil.isStudent()) {
-			//SimpleDateFormattのフォーマットはtimestamp without time zoneか？
-			Date date = new Date();
-			String trainingDate = dateUtil.dateToString(date, "yyyy/MM/dd");
-			short deleteDeta = 0;
-			if(!tStudentAttendanceMapprer.notEnterCount(lmsUserId,trainingDate,deleteDeta)){
-				//ない場合
-			}else {//ある場合
-				
-			}
-			
-		} else {//学生じゃない場合
-			
-		}
-		
-		
-		
 	}
 	
 
@@ -187,6 +171,27 @@ public class AttendanceController {
 
 		return "attendance/detail";
 	}
-	
-
+	/**
+	 * 勤怠管理画面 ログイン時
+	 * @author tanaka
+	 * 
+	 * 
+	 */
+//	@RequestMapping(path = "/detail")
+//	public String notEntryCheck(Model model) {
+//		Integer lmsUserId = loginUserDto.getLmsUserId();
+//		Date date = new Date();
+//		SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+//		String fmtdate = fmt.format(date);
+//		Timestamp trainingDate = dateUtil.stringToTimestamp(fmtdate);
+//		
+//		
+//		if(studentAttendanceService.notEntryCheck(lmsUserId,trainingDate)) {
+//			model.addAttribute("notEntryAlertMessage","過去日の勤怠に未入力があります。");
+//			return "attendance/detail";
+//		}else {
+//		model.addAttribute("notEntryAlertMessage","過去日の勤怠に未入力があります。");
+//		return "attendance/detail";
+//		}
+//	}
 }
