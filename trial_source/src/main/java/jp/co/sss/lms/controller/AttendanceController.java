@@ -19,7 +19,6 @@ import jp.co.sss.lms.form.AttendanceForm;
 import jp.co.sss.lms.service.StudentAttendanceService;
 import jp.co.sss.lms.util.Constants;
 import jp.co.sss.lms.util.DateUtil;
-import jp.co.sss.lms.util.LoginUserUtil;
 
 /**
  * 勤怠管理コントローラ
@@ -36,8 +35,6 @@ public class AttendanceController {
 	private LoginUserDto loginUserDto;
 	@Autowired
 	private DateUtil dateUtil;
-	@Autowired
-	private LoginUserUtil loginUserUtil;
 
 	/**
 	 * 勤怠管理画面 初期表示
@@ -171,27 +168,4 @@ public class AttendanceController {
 
 		return "attendance/detail";
 	}
-	/**
-	 * 勤怠管理画面 ログイン時
-	 * @author tanaka
-	 * 
-	 * 
-	 */
-//	@RequestMapping(path = "/detail")
-//	public String notEntryCheck(Model model) {
-//		Integer lmsUserId = loginUserDto.getLmsUserId();
-//		Date date = new Date();
-//		SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//		String fmtdate = fmt.format(date);
-//		Timestamp trainingDate = dateUtil.stringToTimestamp(fmtdate);
-//		
-//		
-//		if(studentAttendanceService.notEntryCheck(lmsUserId,trainingDate)) {
-//			model.addAttribute("notEntryAlertMessage","過去日の勤怠に未入力があります。");
-//			return "attendance/detail";
-//		}else {
-//		model.addAttribute("notEntryAlertMessage","過去日の勤怠に未入力があります。");
-//		return "attendance/detail";
-//		}
-//	}
 }

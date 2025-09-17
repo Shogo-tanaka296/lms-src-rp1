@@ -85,6 +85,7 @@ public class AttendanceUtil {
 		TrainingTime total = new TrainingTime(hour, minute);
 		return total;
 	}
+	
 
 	/**
 	 * 時刻分を丸めた本日日付を取得
@@ -131,6 +132,58 @@ public class AttendanceUtil {
 		}
 		return map;
 	}
+	
+	/**
+	 * 時間のプルダウンマップを生成
+	 * 
+	 * @return 1時間刻みの時間
+	 * @author 田中
+	 */
+	public LinkedHashMap<Integer,String> getHourMap(){
+		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+		for(int i=0 ; i <= 24 ; i++) {
+			String hour = String.valueOf(i);
+			map.put(i, hour);
+		}
+		
+		return map;
+	}
+	
+	/**
+	 * 分のプルダウンマップを生成
+	 * 
+	 * @return 1分刻みの時間
+	 * @author 田中
+	 */
+	public LinkedHashMap<Integer,String> getMinuteMap(){
+		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+		for(int i=0 ; i<=60 ; i++) {
+			String minute = String.format("%02d",i);
+			map.put(i, minute);
+		}
+		return map;
+	}
+	/**
+	 * 時間(時)の切り出し
+	 * @return 
+	 * @author 田中
+	 * @param 開始時刻or終了時刻
+	 */
+//	public Integer getHour(String hour) {
+//		
+//		return ;
+//	}
+	
+	/**
+	 * 時間(分)の切り出し
+	 * @return 
+	 * @author 田中
+	 * @param 開始時刻or終了時刻
+	 */
+//	public Integer getMinute(String minute) {
+//		
+//		return ;
+//	}
 
 	/**
 	 * 研修日の判定

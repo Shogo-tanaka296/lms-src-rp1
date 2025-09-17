@@ -17,6 +17,20 @@
 		</div>
 	</th:block>
 	
+<!--		
+	<dialog id="notEntryDialog" th:if="${notEntryAlertMessage}">
+		<p> ダイアログ</p>
+		 <button onclick="document.getElementById('notEntryDialog').close()">閉じる</button>
+	</dialog>
+	
+	<script th:inline = "javascript">
+		 document.getElementById("notEntryDialog").showModal();
+	</script>
+-->
+	
+	
+	
+	
 	<!--勤怠未入力メッセージ 9/16田中追加 -->
 <th:block th:if="${not #strings.isEmpty(notEntryAlertMessage)}">
     <script th:inline="javascript">
@@ -25,6 +39,8 @@
         alert(msg);
     </script>
 </th:block>
+
+
 
 	<h2>勤怠管理</h2>
 
