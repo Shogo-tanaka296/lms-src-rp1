@@ -225,9 +225,9 @@ public class StudentAttendanceService {
 		attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
 		//中抜け時間
 		
-		//時間マップ
+		//時間マップ 9/17追加
 		
-		//分マップ
+		//分マップ 9/17追加
 
 		// 途中退校している場合のみ設定
 		if (loginUserDto.getLeaveDate() != null) {
@@ -256,6 +256,8 @@ public class StudentAttendanceService {
 				dailyAttendanceForm.setBlankTimeValue(String.valueOf(
 						attendanceUtil.calcBlankTime(attendanceManagementDto.getBlankTime())));
 			}
+			
+			//9/18追加予定
 //			dailyAttendanceForm
 //			
 //			
