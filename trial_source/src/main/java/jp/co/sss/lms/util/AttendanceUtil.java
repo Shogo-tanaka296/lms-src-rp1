@@ -1,6 +1,7 @@
 package jp.co.sss.lms.util;
 
 import java.text.ParseException;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
@@ -138,9 +139,11 @@ public class AttendanceUtil {
 	 * 
 	 * @return 1時間刻みの時間
 	 * @author 田中
+	 * @return LinkedHashMap<Integer,String>
 	 */
 	public LinkedHashMap<Integer,String> getHourMap(){
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+		map.put(null, ""); //初期値空白にするためにnull
 		for(int i=0 ; i <= 24 ; i++) {
 			String hour = String.valueOf(i);
 			map.put(i, hour);
@@ -154,11 +157,14 @@ public class AttendanceUtil {
 	 * 
 	 * @return 1分刻みの時間
 	 * @author 田中
+	 * @return LinkedHashMap<Integer,String>
 	 */
+
 	public LinkedHashMap<Integer,String> getMinuteMap(){
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+		map.put(null, ""); //初期値空白にするためにnull
 		for(int i=0 ; i<=60 ; i++) {
-			String minute = String.format("%02d",i);
+			String minute = String.format("%02d",i);//必ず2桁にするためにフォーマット使用
 			map.put(i, minute);
 		}
 		return map;
@@ -169,10 +175,10 @@ public class AttendanceUtil {
 	 * @author 田中
 	 * @param 開始時刻or終了時刻
 	 */
-//	public Integer getHour(String hour) {
-//		
-//		return ;
-//	}
+	public Integer getHour(String hour) {
+		int trainingHour = LocalTime.parse(hour).getHour();
+		return trainingHour;
+	}
 	
 	/**
 	 * 時間(分)の切り出し
@@ -180,10 +186,10 @@ public class AttendanceUtil {
 	 * @author 田中
 	 * @param 開始時刻or終了時刻
 	 */
-//	public Integer getMinute(String minute) {
-//		
-//		return ;
-//	}
+	public Integer getMinute(String minute) {
+		int trainingMinute = LocalTime.parse(minute).getMinute();
+		return trainingMinute;
+	}
 
 	/**
 	 * 研修日の判定

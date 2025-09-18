@@ -225,8 +225,9 @@ public class StudentAttendanceService {
 		attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
 		//中抜け時間
 		
+		attendanceForm.setSelectHour(attendanceUtil.getHourMap());
 		//時間マップ 9/17追加
-		
+		attendanceForm.setSelectMinute(attendanceUtil.getMinuteMap());
 		//分マップ 9/17追加
 
 		// 途中退校している場合のみ設定
@@ -257,10 +258,15 @@ public class StudentAttendanceService {
 						attendanceUtil.calcBlankTime(attendanceManagementDto.getBlankTime())));
 			}
 			
-			//9/18追加予定
-//			dailyAttendanceForm
-//			
-//			
+			//9/18追加 開始時間(時) 
+			dailyAttendanceForm.setTrainingStartTimeHour(attendanceUtil.getHour(attendanceManagementDto.getTrainingStartTime()));
+			//9/19追加 開始時間(分)
+			dailyAttendanceForm.setTrainingStartTimeMinute(attendanceUtil.getMinute(attendanceManagementDto.getTrainingStartTime()));
+			//9/18追加 終了時間(時) 
+			dailyAttendanceForm.setTrainingEndTimeHour(attendanceUtil.getHour(attendanceManagementDto.getTrainingStartTime()));
+			//9/19追加 終了時間(分)
+			dailyAttendanceForm.setTrainingEndTimeMinute(attendanceUtil.getMinute(attendanceManagementDto.getTrainingStartTime()));
+			
 			dailyAttendanceForm.setStatus(String.valueOf(attendanceManagementDto.getStatus()));
 			dailyAttendanceForm.setNote(attendanceManagementDto.getNote());
 			dailyAttendanceForm.setSectionName(attendanceManagementDto.getSectionName());
@@ -351,6 +357,15 @@ public class StudentAttendanceService {
 		// 完了メッセージ
 		return messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_UPDATE_NOTICE);
 	}
+	/**
+	 * TASK25機能追加 9/16追加
+	 * 過去日の勤怠に未入力がないか確認
+	 * 
+	 * @param lmsUserId
+	 * @param trainingDate
+	 * @return boolean
+	 * 
+	 */
 	public boolean notEntryCheck(Integer lmsUserId,Timestamp trainingDate) {
 		Short deleteFlg = 0;
 		if(loginUserUtil.isStudent()) { //学生の場合

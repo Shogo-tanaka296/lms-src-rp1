@@ -27,9 +27,9 @@ public class DailyAttendanceForm {
 	/** 退勤時間 */
 	private String trainingEndTime;
 	
-	/** 退勤時間(時)    9/17追加*/
+	/** 退勤時間(時)    9/17追加 田中*/
 	private Integer trainingEndTimeHour;
-	/** 退勤時間(分)    9/17追加*/
+	/** 退勤時間(分)    9/17追加 田中*/
 	private Integer trainingEndTimeMinute;
 	
 	/** 中抜け時間 */

@@ -16,7 +16,15 @@
 			<span>[[${message}]]</span>
 		</div>
 	</th:block>
-	
+		
+<!--勤怠未入力メッセージ 9/16田中追加 -->
+<th:block th:if="${not #strings.isEmpty(notEntryAlertMessage)}">
+    <script th:inline="javascript">
+        // サーバーから渡されたメッセージをJS変数に埋め込む
+        var msg =/* [[${notEntryAlertMessage}]];*/"過去日の勤怠に未入力があります。";
+        alert(msg);
+    </script>
+</th:block>
 <!--		
 	<dialog id="notEntryDialog" th:if="${notEntryAlertMessage}">
 		<p> ダイアログ</p>
@@ -27,18 +35,6 @@
 		 document.getElementById("notEntryDialog").showModal();
 	</script>
 -->
-	
-	
-	
-	
-	<!--勤怠未入力メッセージ 9/16田中追加 -->
-<th:block th:if="${not #strings.isEmpty(notEntryAlertMessage)}">
-    <script th:inline="javascript">
-        // サーバーから渡されたメッセージをJS変数に埋め込む
-        var msg =/* [[${notEntryAlertMessage}]];*/"過去日の勤怠に未入力があります。";
-        alert(msg);
-    </script>
-</th:block>
 
 
 
