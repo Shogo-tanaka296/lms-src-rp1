@@ -144,7 +144,7 @@ public class AttendanceUtil {
 	public LinkedHashMap<Integer,String> getHourMap(){
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
 		map.put(null, ""); //初期値空白にするためにnull
-		for(int i=0 ; i <= 24 ; i++) {
+		for(int i=0 ; i < 24 ; i++) {
 			String hour = String.valueOf(i);
 			map.put(i, hour);
 		}
@@ -163,7 +163,7 @@ public class AttendanceUtil {
 	public LinkedHashMap<Integer,String> getMinuteMap(){
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
 		map.put(null, ""); //初期値空白にするためにnull
-		for(int i=0 ; i<=60 ; i++) {
+		for(int i=0 ; i<60 ; i++) {
 			String minute = String.format("%02d",i);//必ず2桁にするためにフォーマット使用
 			map.put(i, minute);
 		}
@@ -176,10 +176,14 @@ public class AttendanceUtil {
 	 * @param 開始時刻or終了時刻
 	 */
 	public Integer getHour(String hour) {
-		int trainingHour = LocalTime.parse(hour).getHour();
-		return trainingHour;
+		if(hour == null || hour.isEmpty()) {
+			return null;
+		}else {
+			LocalTime time = LocalTime.parse(hour);
+			return time.getHour();
+		}
 	}
-	
+
 	/**
 	 * 時間(分)の切り出し
 	 * @return 
@@ -187,8 +191,12 @@ public class AttendanceUtil {
 	 * @param 開始時刻or終了時刻
 	 */
 	public Integer getMinute(String minute) {
-		int trainingMinute = LocalTime.parse(minute).getMinute();
-		return trainingMinute;
+		if(minute == null || minute.isEmpty()) {
+			return null;
+		}else {
+			LocalTime time = LocalTime.parse(minute);
+			return time.getMinute();
+		}
 	}
 
 	/**

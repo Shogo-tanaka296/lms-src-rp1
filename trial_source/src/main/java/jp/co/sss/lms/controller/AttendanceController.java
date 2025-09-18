@@ -44,19 +44,18 @@ public class AttendanceController {
 	 * @param model
 	 * @return 勤怠管理画面
 	 * @throws ParseException
+	 * 
+	 * 
 	 */
 	@RequestMapping(path = "/detail", method = RequestMethod.GET)
 	public String index(Model model) {
 
-		
+		//9/15田中追加
 		Integer lmsUserId = loginUserDto.getLmsUserId();
 		Date date = new Date();
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String fmtdate = fmt.format(date);
 		Timestamp trainingDate = dateUtil.stringToTimestamp(fmtdate);
-		
-//		System.out.println("コンソール表示テスト");
-//		System.out.println(studentAttendanceService.notEntryCheck(lmsUserId,trainingDate));
 		
 		if(studentAttendanceService.notEntryCheck(lmsUserId,trainingDate)) {
 			model.addAttribute("notEntryAlertMessage","過去日の勤怠に未入力があります。");
