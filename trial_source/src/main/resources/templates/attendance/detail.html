@@ -7,7 +7,6 @@
 </head>
 <body>
 
-	<!-- 完了メッセージ -->
 	<th:block th:if="${not #strings.isEmpty(message)}" id="message">
 		<div class="alert alert-info alert-dismissible fade in" role="alert">
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -18,23 +17,13 @@
 	</th:block>
 		
 <!--勤怠未入力メッセージ 9/16田中追加 -->
-<th:block th:if="${not #strings.isEmpty(notEntryAlertMessage)}">
+<th:block th:if="${not #strings.isEmpty(notEntryAlertMessage)}" >
     <script th:inline="javascript">
-        // サーバーから渡されたメッセージをJS変数に埋め込む
-        var msg =/* [[${notEntryAlertMessage}]];*/"過去日の勤怠に未入力があります。";
-        alert(msg);
+		window.addEventListener('DOMContentLoaded',function(){
+        alert(/*[[${notEntryAlertMessage}]]*/);
+        });
     </script>
 </th:block>
-<!--		
-	<dialog id="notEntryDialog" th:if="${notEntryAlertMessage}">
-		<p> ダイアログ</p>
-		 <button onclick="document.getElementById('notEntryDialog').close()">閉じる</button>
-	</dialog>
-	
-	<script th:inline = "javascript">
-		 document.getElementById("notEntryDialog").showModal();
-	</script>
--->
 
 
 

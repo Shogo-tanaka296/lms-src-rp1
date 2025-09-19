@@ -19,6 +19,7 @@ import jp.co.sss.lms.form.AttendanceForm;
 import jp.co.sss.lms.service.StudentAttendanceService;
 import jp.co.sss.lms.util.Constants;
 import jp.co.sss.lms.util.DateUtil;
+import jp.co.sss.lms.util.MessageUtil;
 
 /**
  * 勤怠管理コントローラ
@@ -35,6 +36,9 @@ public class AttendanceController {
 	private LoginUserDto loginUserDto;
 	@Autowired
 	private DateUtil dateUtil;
+	//9月19日　田中追加
+	@Autowired
+	private MessageUtil messageUtil;
 
 	/**
 	 * 勤怠管理画面 初期表示
@@ -58,7 +62,8 @@ public class AttendanceController {
 		Timestamp trainingDate = dateUtil.stringToTimestamp(fmtdate);
 		
 		if(studentAttendanceService.notEntryCheck(lmsUserId,trainingDate)) {
-			model.addAttribute("notEntryAlertMessage","過去日の勤怠に未入力があります。");
+			String notEntryCheckMessage = messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_NOTENTRYCHECK);
+			model.addAttribute("notEntryAlertMessage",notEntryCheckMessage);
 		}else {
 			
 		}
@@ -140,6 +145,10 @@ public class AttendanceController {
 		AttendanceForm attendanceForm = studentAttendanceService
 				.setAttendanceForm(attendanceManagementDtoList);
 		model.addAttribute("attendanceForm", attendanceForm);
+		
+		//9月16日田中追加  更新ボタン押下時のメッセージ
+		String message = messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_UPDATE_CHECK);
+		model.addAttribute("message",message);
 
 		return "attendance/update";
 	}
@@ -160,6 +169,7 @@ public class AttendanceController {
 		// 更新
 		String message = studentAttendanceService.update(attendanceForm);
 		model.addAttribute("message", message);
+		
 		// 一覧の再取得
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());

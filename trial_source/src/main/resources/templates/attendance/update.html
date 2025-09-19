@@ -6,11 +6,20 @@
 <title>勤怠情報変更｜LMS</title>
 </head>
 <body>
-
+	
+	
 	<th:block th:if="${session.loginUserDto.role == '0001'}">
 		<h2>勤怠管理</h2>
 	</th:block>
-
+	
+	<--! 9月19日田中追加  -->
+	<th:block >
+		
+		
+		
+		
+	</th:block>
+	
 	<th:block th:if="${session.loginUserDto.role != '0001'}">
 		<h2>勤怠管理 <small>( [[${attendanceForm.userName}]] )</small></h2>
 		<th:block th:if="${session.loginUserDto.leaveFlg == '1'}">
@@ -21,6 +30,7 @@
 	<div class="row">
 		<div class="bs-component col-sm-12">
 
+	
 			<form th:action="@{/attendance/update}" method="post">
 				<table class="table table-hover dataTable no-footer">
 					<thead>
@@ -98,11 +108,19 @@
 						<a th:href="@{/attendance/detail}" class="btn btn-default">戻る</a>
 					</th:block>
 					<th:block th:if="${session.loginUserDto.role != '0001'}">
-						<input type="submit" value="戻る" name="indexCompany" class="btn btn-default" />
+						<input type="submit" value="戻る" name="indexCompany" class="btn btn-default">
 					</th:block>
-					<input type="submit" value="更新" name="complete" class="btn btn-info" />
-				</div>
-
+					
+					<!-- 9月19日 田中変更,追加 -->
+					<input type="submit" value="更新" name="complete"  class="btn btn-info" id="check">
+					<script th:inline="javascript">
+						document.getElementById('check').addEventListener('click',function(event){
+						if(!confirm(/*[[${message}]]*/)){
+							event.preventDefault();
+							}
+						});
+    				</script> 
+				</div>	
 			</form>
 		</div>
 	</div>
