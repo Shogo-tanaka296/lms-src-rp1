@@ -321,7 +321,7 @@ public class StudentAttendanceService {
 			// 出勤時刻整形
 			
 			
-			//9月19日　田中　追加
+			//9月19日　田中　
 			Integer startTimeHour = dailyAttendanceForm.getTrainingStartTimeHour();
 			Integer startTimeMinute = dailyAttendanceForm.getTrainingStartTimeMinute();
 			Integer endTimeHour = dailyAttendanceForm.getTrainingEndTimeHour();
