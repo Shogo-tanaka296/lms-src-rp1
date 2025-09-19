@@ -319,32 +319,31 @@ public class StudentAttendanceService {
 			tStudentAttendance.setLmsUserId(lmsUserId);
 			tStudentAttendance.setAccountId(loginUserDto.getAccountId());
 			// 出勤時刻整形
-			System.out.println("aa"+dailyAttendanceForm.getTrainingStartTimeHour());
-			System.out.println("ii"+dailyAttendanceForm.getTrainingStartTimeMinute());
 			
+			
+			//9月19日　田中　追加
 			Integer startTimeHour = dailyAttendanceForm.getTrainingStartTimeHour();
-			Integer startTimeMinute = dailyAttendanceForm.getTrainingEndTimeMinute();
+			Integer startTimeMinute = dailyAttendanceForm.getTrainingStartTimeMinute();
 			Integer endTimeHour = dailyAttendanceForm.getTrainingEndTimeHour();
 			Integer endTimeMinute = dailyAttendanceForm.getTrainingEndTimeMinute();
 			TrainingTime trainingStartTime = null;
 			TrainingTime trainingEndTime = null;
 			
-			if(startTimeHour != null && startTimeMinute != null) {
+			try {
 				trainingStartTime = new TrainingTime(startTimeHour,startTimeMinute);
 				tStudentAttendance.setTrainingStartTime(trainingStartTime.getFormattedString());
+			}catch(IllegalArgumentException e) {
+				e.printStackTrace();
+				continue;
 			}
-			if(endTimeHour != null && endTimeMinute != null) {
+			try {
 				trainingEndTime = new TrainingTime(endTimeHour,endTimeMinute);
-				tStudentAttendance.setTrainingEndTime(trainingEndTime.getFormattedString());
+				tStudentAttendance.setTrainingEndTime(trainingEndTime.getFormattedString());	
+			}catch (IllegalArgumentException e) {
+				e.printStackTrace();
+				continue;
 			}
 			
-//			TrainingTime trainingStartTime = null;
-//			trainingStartTime = new TrainingTime(dailyAttendanceForm.getTrainingStartTimeHour(),dailyAttendanceForm.getTrainingStartTimeMinute());
-//			tStudentAttendance.setTrainingStartTime(trainingStartTime.getFormattedString());
-//			// 退勤時刻整形
-//			TrainingTime trainingEndTime = null;
-//			trainingEndTime = new TrainingTime(dailyAttendanceForm.getTrainingEndTimeHour(),dailyAttendanceForm.getTrainingEndTimeMinute());
-//			tStudentAttendance.setTrainingEndTime(trainingEndTime.getFormattedString());
 			// 中抜け時間
 			tStudentAttendance.setBlankTime(dailyAttendanceForm.getBlankTime());
 			// 遅刻早退ステータス
