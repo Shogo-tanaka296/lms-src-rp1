@@ -135,6 +135,7 @@ public class AttendanceUtil {
 	}
 	
 	/**
+	 * 9月18日　task26関連追加 
 	 * 時間のプルダウンマップを生成
 	 * 
 	 * @return 1時間刻みの時間
@@ -153,6 +154,7 @@ public class AttendanceUtil {
 	}
 	
 	/**
+	 * 9月18日　task26関連追加 
 	 * 分のプルダウンマップを生成
 	 * 
 	 * @return 1分刻みの時間
@@ -170,8 +172,9 @@ public class AttendanceUtil {
 		return map;
 	}
 	/**
+	 * 9月18日　task26関連追加 
 	 * 時間(時)の切り出し
-	 * @return 
+	 * @return  時間(時)
 	 * @author 田中
 	 * @param 開始時刻or終了時刻
 	 */
@@ -185,8 +188,9 @@ public class AttendanceUtil {
 	}
 
 	/**
+	 * 9月18日　task26関連追加 
 	 * 時間(分)の切り出し
-	 * @return 
+	 * @return 時間(分)
 	 * @author 田中
 	 * @param 開始時刻or終了時刻
 	 */

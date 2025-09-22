@@ -33,7 +33,6 @@ import jp.co.sss.lms.util.TrainingTime;
  */
 @Service
 public class StudentAttendanceService {
-
 	@Autowired
 	private DateUtil dateUtil;
 	@Autowired
@@ -307,10 +306,12 @@ public class StudentAttendanceService {
 
 		// 入力された情報を更新用のエンティティに移し替え
 		Date date = new Date();
+		・
 		for (@Valid DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
 
+			
 			// 更新用エンティティ作成
-			@Valid TStudentAttendance tStudentAttendance = new TStudentAttendance();
+			TStudentAttendance tStudentAttendance = new TStudentAttendance();
 			// 日次勤怠フォームから更新用のエンティティにコピー
 			BeanUtils.copyProperties(dailyAttendanceForm, tStudentAttendance);
 			// 研修日付
@@ -368,6 +369,9 @@ public class StudentAttendanceService {
 			tStudentAttendance.setDeleteFlg(Constants.DB_FLG_FALSE);
 			// 登録用Listへ追加
 			tStudentAttendanceList.add(tStudentAttendance);
+		
+			
+			
 		}
 		// 登録・更新処理
 		for (TStudentAttendance tStudentAttendance : tStudentAttendanceList) {
