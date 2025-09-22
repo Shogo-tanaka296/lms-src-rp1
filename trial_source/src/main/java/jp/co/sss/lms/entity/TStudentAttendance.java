@@ -2,6 +2,7 @@ package jp.co.sss.lms.entity;
 
 import java.util.Date;
 
+import jakarta.validation.Valid;
 import lombok.Data;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Data;
  * @author 東京ITスクール
  */
 @Data
+@Valid
 public class TStudentAttendance {
 
 	/** 受講生入力勤怠情報ID */
