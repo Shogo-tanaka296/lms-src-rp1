@@ -10,14 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import jakarta.validation.Valid;
+import jakarta.validation.Validator;
+import jakarta.validation.groups.Default;
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
 import jp.co.sss.lms.form.AttendanceForm;
+import jp.co.sss.lms.form.TimeValidGroup;
 import jp.co.sss.lms.service.StudentAttendanceService;
+import jp.co.sss.lms.util.AttendanceUtil;
 import jp.co.sss.lms.util.Constants;
 import jp.co.sss.lms.util.DateUtil;
 import jp.co.sss.lms.util.MessageUtil;
@@ -41,6 +45,11 @@ public class AttendanceController {
 	//9月19日　Task25関連 田中追加
 	@Autowired
 	private MessageUtil messageUtil;
+	
+	@Autowired
+	private  Validator validator;
+	@Autowired
+	AttendanceUtil attendanceUtil;
 
 	/**
 	 * 勤怠管理画面 初期表示
@@ -165,13 +174,33 @@ public class AttendanceController {
 	 * @throws ParseException
 	 */
 	@RequestMapping(path = "/update", params = "complete", method = RequestMethod.POST)
-	public String complete(@Valid AttendanceForm attendanceForm, BindingResult result, Model model)
+	public String complete(@Validated({Default.class,TimeValidGroup.class}) AttendanceForm attendanceForm, BindingResult result, Model model)
 			throws ParseException {
-
-		if(result.hasErrors()) {
-			
-			System.out.println("あああああ"+result.getAllErrors());
+		Date currentDate = attendanceUtil.getTrainingDate(); //現在時刻から日付
+		
+		attendanceForm.getAttendanceList().stream().forEach(System.out::println);
 				
+		
+//		DailyAttendanceForm dailyAttendanceForm = attendanceForm.getAttendanceList().get(1);
+//		String time = dailyAttendanceForm.getTrainingStartTime();
+//		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm");
+//		LocalTime fmtStartTime = LocalTime.parse(time, fmt);
+//		System.out.println("a"+time);
+//		System.out.println(fmtStartTime);
+		
+//		System.out.println(currentDate.compareTo(date)); -1 現在時刻より前なので負
+//		System.out.println(date.compareTo(currentDate));  1 現在時刻より後なので正
+		
+		
+//		for(DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
+//			String strDate = dailyAttendanceForm.getTrainingDate();
+//			Date selectDate = dateUtil.stringToDate(strDate, "yyyy/MM/dd");
+//			if(currentDate.compareTo(selectDate) <= 0) { //1が帰ってきたときだけfalse
+//				
+//			}
+		
+	
+		if(result.hasErrors()) {
 			//resultにエラーがある場合、リスト再描画
 			List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 					.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());

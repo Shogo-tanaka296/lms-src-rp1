@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import jakarta.validation.Valid;
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
 import jp.co.sss.lms.entity.TStudentAttendance;
@@ -45,7 +44,7 @@ public class StudentAttendanceService {
 	private LoginUserDto loginUserDto;
 	@Autowired
 	private TStudentAttendanceMapper tStudentAttendanceMapper;
-
+	
 	/**
 	 * 勤怠一覧情報取得
 	 * 
@@ -306,9 +305,8 @@ public class StudentAttendanceService {
 
 		// 入力された情報を更新用のエンティティに移し替え
 		Date date = new Date();
-		・
-		for (@Valid DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
-
+		for (DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
+			
 			
 			// 更新用エンティティ作成
 			TStudentAttendance tStudentAttendance = new TStudentAttendance();
@@ -369,8 +367,7 @@ public class StudentAttendanceService {
 			tStudentAttendance.setDeleteFlg(Constants.DB_FLG_FALSE);
 			// 登録用Listへ追加
 			tStudentAttendanceList.add(tStudentAttendance);
-		
-			
+
 			
 		}
 		// 登録・更新処理
@@ -407,6 +404,7 @@ public class StudentAttendanceService {
 		} else { //学生じゃない場合
 			return false;
 		}
+		
 
 	}
 

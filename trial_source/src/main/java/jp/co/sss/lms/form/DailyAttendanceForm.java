@@ -1,7 +1,12 @@
 
 package jp.co.sss.lms.form;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
+import jp.co.sss.lms.util.DateUtil;
 import jp.co.sss.lms.util.MessageUtil;
 import lombok.Data;
 
@@ -12,7 +17,10 @@ import lombok.Data;
  */
 @Data
 public class DailyAttendanceForm {
-
+	@Autowired
+	DateUtil dateUtil;
+	
+	@Autowired
 	private MessageUtil messageUtil;
 
 	/** 受講生勤怠ID */
@@ -20,14 +28,13 @@ public class DailyAttendanceForm {
 	/** 途中退校日 */
 	private String leaveDate;
 	/** 日付 */
-//	@NotNull(message = "{attendance.punchInEmpty}")
 	private String trainingDate;
 	/** 出勤時間 */
 //	@NotNull(message = "{input.invalid}")
 	private String trainingStartTime;
 
 	/**　出勤時間(時)   9/17追加 */
-	@NotNull(message = "{input.invalid}")
+	@NotNull(groups = TimeValidGroup.class ,message= "{input.invalid}")
 	private Integer trainingStartTimeHour;
 	/**　出勤時間(分)   9/17追加 */
 //	@NotNull(message = "{input.invalid}")
@@ -71,5 +78,27 @@ public class DailyAttendanceForm {
 	private String courseName;
 	/** インデックス */
 	private String index;
-
+	
+//	@AssertTrue(message="attendance.trainingTimeRange")
+//	public boolean isTrainingTimeRange() {
+//		return ValidTimeRange(trainingStartTime,trainingEndTime);
+//	}
+//	
+//	
+//	public boolean ValidTimeRange(String startTime,String endTime) {
+//		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm");
+//		LocalTime fmtStartTime = LocalTime.parse(startTime, fmt);
+//		LocalTime fmtEndTime = LocalTime.parse(endTime, fmt);	
+//		
+//	}
+	
+	
+	@AssertTrue(message="")
+	public boolean trainingTimeRange() {
+		String currentDate = dateUtil.getCurrentDateString();
+		if(!this.trainingDate.equals(currentDate)) {
+			return true;
+		}
+		return false;
+	}
 }
