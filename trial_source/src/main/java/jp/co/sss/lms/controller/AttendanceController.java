@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import jakarta.validation.Validator;
 import jakarta.validation.groups.Default;
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
@@ -45,9 +44,7 @@ public class AttendanceController {
 	//9月19日　Task25関連 田中追加
 	@Autowired
 	private MessageUtil messageUtil;
-	
-	@Autowired
-	private  Validator validator;
+
 	@Autowired
 	AttendanceUtil attendanceUtil;
 
@@ -153,6 +150,8 @@ public class AttendanceController {
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		// 勤怠フォームの生成
+		System.out.println("あああ"+attendanceManagementDtoList.get(0).getTrainingStartTime());
+		
 		AttendanceForm attendanceForm = studentAttendanceService
 				.setAttendanceForm(attendanceManagementDtoList);
 		model.addAttribute("attendanceForm", attendanceForm);
@@ -179,25 +178,11 @@ public class AttendanceController {
 		Date currentDate = attendanceUtil.getTrainingDate(); //現在時刻から日付
 		
 		attendanceForm.getAttendanceList().stream().forEach(System.out::println);
-				
 		
-//		DailyAttendanceForm dailyAttendanceForm = attendanceForm.getAttendanceList().get(1);
-//		String time = dailyAttendanceForm.getTrainingStartTime();
-//		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm");
-//		LocalTime fmtStartTime = LocalTime.parse(time, fmt);
-//		System.out.println("a"+time);
-//		System.out.println(fmtStartTime);
 		
 //		System.out.println(currentDate.compareTo(date)); -1 現在時刻より前なので負
 //		System.out.println(date.compareTo(currentDate));  1 現在時刻より後なので正
 		
-		
-//		for(DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
-//			String strDate = dailyAttendanceForm.getTrainingDate();
-//			Date selectDate = dateUtil.stringToDate(strDate, "yyyy/MM/dd");
-//			if(currentDate.compareTo(selectDate) <= 0) { //1が帰ってきたときだけfalse
-//				
-//			}
 		
 	
 		if(result.hasErrors()) {
@@ -220,18 +205,5 @@ public class AttendanceController {
 		}
 		
 		
-
-		
-		
-//		// 更新
-//		String message = studentAttendanceService.update(attendanceForm);
-//		model.addAttribute("message", message);
-//
-//		// 一覧の再取得
-//		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
-//				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
-//		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
-//
-//		return "attendance/detail";
 	}
 }
