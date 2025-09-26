@@ -10,15 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import jakarta.validation.groups.Default;
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
 import jp.co.sss.lms.form.AttendanceForm;
-import jp.co.sss.lms.form.TimeValidGroup;
+import jp.co.sss.lms.form.DailyAttendanceForm;
 import jp.co.sss.lms.service.StudentAttendanceService;
 import jp.co.sss.lms.util.AttendanceUtil;
 import jp.co.sss.lms.util.Constants;
@@ -47,6 +46,9 @@ public class AttendanceController {
 
 	@Autowired
 	AttendanceUtil attendanceUtil;
+	
+	@Autowired
+	private SmartValidator validator;
 
 	/**
 	 * 勤怠管理画面 初期表示
@@ -68,24 +70,24 @@ public class AttendanceController {
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String fmtdate = fmt.format(date);
 		Timestamp trainingDate = dateUtil.stringToTimestamp(fmtdate);
-		
+
 		if(studentAttendanceService.notEntryCheck(lmsUserId,trainingDate)) {
 			String notEntryCheckMessage = messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_NOTENTRYCHECK);
 			model.addAttribute("notEntryAlertMessage",notEntryCheckMessage);
 		}else {
-			
+
 		}
-		
-		
+
+
 		// 勤怠一覧の取得
-	
+
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
 
 		return "attendance/detail";
 	}
-	
+
 
 	/**
 	 * 勤怠管理画面 『出勤』ボタン押下
@@ -151,11 +153,11 @@ public class AttendanceController {
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		// 勤怠フォームの生成
 		System.out.println("あああ"+attendanceManagementDtoList.get(0).getTrainingStartTime());
-		
+
 		AttendanceForm attendanceForm = studentAttendanceService
 				.setAttendanceForm(attendanceManagementDtoList);
 		model.addAttribute("attendanceForm", attendanceForm);
-		
+
 		//9月16日田中追加  更新ボタン押下時のメッセージ
 		String message = messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_UPDATE_CHECK);
 		model.addAttribute("message",message);
@@ -171,39 +173,45 @@ public class AttendanceController {
 	 * @param result
 	 * @return 勤怠管理画面
 	 * @throws ParseException
+	 * 9/26　メソッド内記述追加　田中
 	 */
 	@RequestMapping(path = "/update", params = "complete", method = RequestMethod.POST)
-	public String complete(@Validated({Default.class,TimeValidGroup.class}) AttendanceForm attendanceForm, BindingResult result, Model model)
+	public String complete(AttendanceForm attendanceForm, BindingResult result, Model model)
 			throws ParseException {
-		Date currentDate = attendanceUtil.getTrainingDate(); //現在時刻から日付
-		
-		attendanceForm.getAttendanceList().stream().forEach(System.out::println);
-		
-		
-//		System.out.println(currentDate.compareTo(date)); -1 現在時刻より前なので負
-//		System.out.println(date.compareTo(currentDate));  1 現在時刻より後なので正
+		Date today = attendanceUtil.getTrainingDate();
+		studentAttendanceService.setTrainingTime(attendanceForm);//(時)(分)から出勤、退勤時間をセット
+
+
 		
 		
-	
-		if(result.hasErrors()) {
-			//resultにエラーがある場合、リスト再描画
-			List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
-					.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
-			model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
-			model.addAttribute("message","入力内容が不正です");
-			return "attendance/detail";
-		}else {
+		for(DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
+			Date currentDay = dateUtil.parse(dailyAttendanceForm.getTrainingDate());
+
+			if(studentAttendanceService.isBefore(today, currentDay)) {
+				validator.validate(dailyAttendanceForm, result);
+			}else {
+			}
+		}
+			attendanceForm.getAttendanceList().stream().forEach(System.out::println);
+
+			System.out.println("エラーカウント" + result.getErrorCount());
+
+			if(result.hasErrors()) {
+				//resultにエラーがある場合、リスト再描画
+				List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
+						.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
+				model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
+				model.addAttribute("message","入力内容が不正です");
+				return "attendance/detail";
+
+			}
+
 			//resultにエラーがない場合、DB更新してリスト再描画
 			String message = studentAttendanceService.update(attendanceForm);
-			model.addAttribute("message", message);
 			List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 					.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
+			model.addAttribute("message", message);
 			model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
-			
 			return "attendance/detail";
-			
 		}
-		
-		
 	}
-}

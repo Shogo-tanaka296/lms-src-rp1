@@ -202,6 +202,14 @@ public class AttendanceUtil {
 			return time.getMinute();
 		}
 	}
+	public String timeSetString(Integer Hour,Integer Min) {
+		try {
+			String trainingTime = new TrainingTime(Hour,Min).toString();
+			return trainingTime;
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException();
+		}
+	}
 
 	/**
 	 * 研修日の判定

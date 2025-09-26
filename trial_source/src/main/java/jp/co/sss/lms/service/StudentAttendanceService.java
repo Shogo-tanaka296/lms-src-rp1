@@ -259,6 +259,14 @@ public class StudentAttendanceService {
 			Integer startMinute = attendanceUtil.getMinute(dailyAttendanceForm.getTrainingStartTime());
 			Integer endHour = attendanceUtil.getHour(dailyAttendanceForm.getTrainingEndTime());
 			Integer endMinute = attendanceUtil.getMinute(dailyAttendanceForm.getTrainingEndTime());
+			
+			try {
+				dailyAttendanceForm.setTrainingStartTime(attendanceUtil.timeSetString(startHour, startMinute));
+			} catch (IllegalArgumentException e) {}
+			
+			try {
+				dailyAttendanceForm.setTrainingEndTime(attendanceUtil.timeSetString(endHour, endMinute));
+			} catch (IllegalArgumentException e) {}
 
 			//9月18.19　Task26関連 田中追加
 			//9/18追加 開始時間(時)
@@ -280,7 +288,6 @@ public class StudentAttendanceService {
 
 			attendanceForm.getAttendanceList().add(dailyAttendanceForm);
 		}
-
 		return attendanceForm;
 	}
 
@@ -335,17 +342,12 @@ public class StudentAttendanceService {
 			try {
 				trainingStartTime = new TrainingTime(startTimeHour, startTimeMinute);
 				tStudentAttendance.setTrainingStartTime(trainingStartTime.getFormattedString());
-			} catch (IllegalArgumentException e) {
-				
-				continue;
-			}
+			} catch (IllegalArgumentException e) {}
+			
 			try {
 				trainingEndTime = new TrainingTime(endTimeHour, endTimeMinute);
 				tStudentAttendance.setTrainingEndTime(trainingEndTime.getFormattedString());
-			} catch (IllegalArgumentException e) {
-				
-				continue;
-			}
+			} catch (IllegalArgumentException e) {}
 
 			// 中抜け時間
 			tStudentAttendance.setBlankTime(dailyAttendanceForm.getBlankTime());
@@ -402,9 +404,60 @@ public class StudentAttendanceService {
 		} else { //学生じゃない場合
 			return false;
 		}
-		
+	}
+	//9月26日　Task27関連 田中追加
+	public AttendanceForm setTrainingTime(AttendanceForm attendanceForm) {
+		for(DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
+			Integer startHour =dailyAttendanceForm.getTrainingStartTimeHour();
+			Integer startMinute = dailyAttendanceForm.getTrainingStartTimeMinute();
+			Integer endHour = dailyAttendanceForm.getTrainingEndTimeHour();
+			Integer endMinute = dailyAttendanceForm.getTrainingEndTimeMinute();
 
+			try {
+				if(startHour != null && startMinute != null) {
+					dailyAttendanceForm.setTrainingStartTime
+							(attendanceUtil.timeSetString(startHour, startMinute));
+				}
+			}catch (IllegalArgumentException e){
+				System.out.println(dailyAttendanceForm.getTrainingDate() + "startどちらかnull");
+			}
+			try {
+				if(endHour != null && endMinute != null) {
+					dailyAttendanceForm.setTrainingEndTime
+							(attendanceUtil.timeSetString(endHour, endMinute));
+				}
+			}catch (IllegalArgumentException e){
+				System.out.println(dailyAttendanceForm.getTrainingDate() + "endどちらかnull");
+			}
+		}
+		return attendanceForm;
+	}
+	public boolean isBefore(Date today,Date currentDay) {
+		String DayOfTheWeek = dateUtil.getDayOfTheWeekShort(currentDay);
+		boolean dayOfWeek;
+		if(DayOfTheWeek.equals("土")||DayOfTheWeek.equals("日")) {
+			dayOfWeek = false;
+		} else {
+			dayOfWeek = true;
+		}
+		Integer courseId = loginUserDto.getCourseId();
+		boolean isWorkDay = attendanceUtil.isWorkDay(courseId, currentDay);
+		if(dateUtil.differenceDays(currentDay, today) < 0 && isWorkDay && dayOfWeek) {//!status.equals("1") && 
+				return true;
+		} else {
+			return false;
+		}
 	}
 	
+		//	public boolean isPastDay(String thisDay) {
+		//		attendanceUtil.getHourMap()
+		//		if() {
+		//		return true;
+		//	}else {
+		//		
+		//		return false;
+		//	}
+		//	
 
+	
 }
