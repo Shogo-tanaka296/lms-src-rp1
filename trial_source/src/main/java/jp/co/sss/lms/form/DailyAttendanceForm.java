@@ -3,7 +3,6 @@ package jp.co.sss.lms.form;
 
 
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -22,22 +21,22 @@ public class DailyAttendanceForm {
 	/** 日付 */
 	private String trainingDate;
 	/** 出勤時間 */
-	@NotNull(message= "{input.invalid}")
+//	@NotNull(message= "{input.invalid}")
 	private String trainingStartTime;
 	/**　出勤時間(時)   9/17追加 */
-	@NotNull(message= "{input.invalid}")
+//	@NotNull(message= "{input.invalid}")
 	private Integer trainingStartTimeHour;
 	/**　出勤時間(分)   9/17追加 */
-	@NotNull(message= "{input.invalid}")
+//	@NotNull(message= "{input.invalid}")
 	private Integer trainingStartTimeMinute;
 	/** 退勤時間 */
-	@NotNull(message= "{input.invalid}")
+//	@NotNull(message= "{input.invalid}")
 	private String trainingEndTime;
 	/** 退勤時間(時)    9/17追加 田中*/
-	@NotNull(message= "{input.invalid}")
+//	@NotNull(message= "{input.invalid}")
 	private Integer trainingEndTimeHour;
 	/** 退勤時間(分)    9/17追加 田中*/
-	@NotNull(message= "{input.invalid}")
+//	@NotNull(message= "{input.invalid}")
 	private Integer trainingEndTimeMinute;
 	/** 中抜け時間 */
 	private Integer blankTime;
@@ -68,7 +67,7 @@ public class DailyAttendanceForm {
 	private String index;
 	
 	@AssertTrue(message = "{attendance.trainingTimeRange}")
-	public boolean isEndAfterStart() {
+	public boolean trainingTimeRange() {
 		if(trainingStartTimeHour == null && trainingStartTimeMinute == null) {
 			return false;
 		}
@@ -85,10 +84,30 @@ public class DailyAttendanceForm {
 		}
 	}
 	
-//	@AssertTrue(message ="{attendance.punchInEmpty}")
-//	public boolean isEmpty() {
-//		if(!(trainingStartTime == null && trainingEndTime != null)){
-//			
-//		}
-//	}
+	@AssertTrue(message ="{attendance.punchInEmpty}")
+	public boolean punchInEmpty() {
+		if(trainingStartTime == null && trainingEndTime != null){
+			return false;
+		}else {
+			return true;
+		}
+	}
+	@AssertTrue(message ="{input.invalid}")
+	public boolean isEmptyStartTime() {
+		if((trainingStartTimeHour !=null && trainingStartTimeMinute != null) ||
+		(trainingStartTimeHour == null && trainingStartTimeMinute == null)){
+			return true;
+		}else {
+			return false;
+		}
+	}
+	@AssertTrue(message ="{input.invalid}")
+	public boolean isEmptyEndTime() {
+		if((trainingEndTimeHour != null && trainingEndTimeMinute != null) ||
+				(trainingEndTimeHour == null && trainingEndTimeMinute == null)){
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
