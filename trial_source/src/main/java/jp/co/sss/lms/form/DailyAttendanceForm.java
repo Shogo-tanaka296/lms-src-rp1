@@ -21,22 +21,16 @@ public class DailyAttendanceForm {
 	/** 日付 */
 	private String trainingDate;
 	/** 出勤時間 */
-//	@NotNull(message= "{input.invalid}")
 	private String trainingStartTime;
-	/**　出勤時間(時)   9/17追加 */
-//	@NotNull(message= "{input.invalid}")
+	/**　出勤時間(時)  */
 	private Integer trainingStartTimeHour;
-	/**　出勤時間(分)   9/17追加 */
-//	@NotNull(message= "{input.invalid}")
+	/**　出勤時間(分) */
 	private Integer trainingStartTimeMinute;
 	/** 退勤時間 */
-//	@NotNull(message= "{input.invalid}")
 	private String trainingEndTime;
-	/** 退勤時間(時)    9/17追加 田中*/
-//	@NotNull(message= "{input.invalid}")
+	/** 退勤時間(時)  */
 	private Integer trainingEndTimeHour;
-	/** 退勤時間(分)    9/17追加 田中*/
-//	@NotNull(message= "{input.invalid}")
+	/** 退勤時間(分)  */
 	private Integer trainingEndTimeMinute;
 	/** 中抜け時間 */
 	private Integer blankTime;
@@ -66,48 +60,61 @@ public class DailyAttendanceForm {
 	/** インデックス */
 	private String index;
 	
+	/**
+	 * 9月29追加
+	 * 退勤時間より出勤時間が早い場合カット
+	 * @author 田中
+	 * @return
+	 */
+
 	@AssertTrue(message = "{attendance.trainingTimeRange}")
-	public boolean trainingTimeRange() {
-		if(trainingStartTimeHour == null && trainingStartTimeMinute == null) {
-			return false;
-		}
-		if(trainingEndTimeHour == null && trainingEndTimeHour == null) {
-			return false;
-		}
+	public boolean isTrainingTimeRange() { 
+		boolean startTime = trainingStartTime != null && trainingStartTime != null; 
+		boolean endTime   = trainingEndTime != null && trainingEndTime != null;
 		
+		
+		//分に直して比べる
 		Integer startMin = (trainingStartTimeHour * 60) + trainingStartTimeMinute;
 		Integer endMin= (trainingEndTimeHour *60) + trainingEndTimeMinute;
-		if(startMin < endMin) {
-			return true;
-		}else {
-			return false;
-		}
+		boolean endAfterStart = startMin < endMin;
+		
+		return startTime && endTime && endAfterStart;
 	}
 	
+	/**9月29日
+	 * 出勤時間が空で退勤時間が選択されているときのみカット
+	 * @author 田中
+	 * @return
+	*/
 	@AssertTrue(message ="{attendance.punchInEmpty}")
-	public boolean punchInEmpty() {
-		if(trainingStartTime == null && trainingEndTime != null){
-			return false;
-		}else {
-			return true;
-		}
+	public boolean isPunchInEmpty() {
+		boolean isStartEmpty = 
+				trainingStartTimeHour != null && trainingStartTimeMinute != null;
+		boolean isEndEmpty   =
+				trainingEndTimeHour != null && trainingEndTimeMinute != null;
+		return !(isStartEmpty && !isEndEmpty);
 	}
+	
+	/**9月29日追加
+	 * 出勤時間の時間と分が揃っているか、どちらも空白のみカット
+	 * @author 田中
+	 * @return
+	 */
 	@AssertTrue(message ="{input.invalid}")
 	public boolean isEmptyStartTime() {
-		if((trainingStartTimeHour !=null && trainingStartTimeMinute != null) ||
-		(trainingStartTimeHour == null && trainingStartTimeMinute == null)){
-			return true;
-		}else {
-			return false;
-		}
+		boolean startHour = trainingStartTimeHour != null;
+		boolean startMinute =trainingStartTimeHour != null;
+		return (startHour && startMinute) || (!startHour && !startMinute);
 	}
+	/**9月29日追加
+	 * 退勤時間の時間と分が揃っているか、どちらも空白のみカット
+	 * @author 田中
+	 * @return
+	 */
 	@AssertTrue(message ="{input.invalid}")
 	public boolean isEmptyEndTime() {
-		if((trainingEndTimeHour != null && trainingEndTimeMinute != null) ||
-				(trainingEndTimeHour == null && trainingEndTimeMinute == null)){
-			return true;
-		} else {
-			return false;
-		}
+		boolean endHour = trainingEndTimeHour != null;
+		boolean endMinute = trainingEndTimeHour != null;
+		return (endHour && endMinute) || (!endHour && !endMinute);
 	}
 }

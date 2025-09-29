@@ -202,6 +202,14 @@ public class AttendanceUtil {
 			return time.getMinute();
 		}
 	}
+	/**
+	 * 9/26追加
+	 * 整数型の引数をHH:mm形式でString型に変換
+	 * @author 田中
+	 * @param Hour
+	 * @param Min
+	 * @return
+	 */
 	public String timeSetString(Integer Hour,Integer Min) {
 		try {
 			String trainingTime = new TrainingTime(Hour,Min).toString();
@@ -224,6 +232,21 @@ public class AttendanceUtil {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * 9月29日　田中追加
+	 * 研修日が本日より過去かを判定
+	 * @param today
+	 * @param currentDay
+	 * @return
+	 */
+	public boolean isBefore(Date today,Date currentDay) {
+		if(dateUtil.differenceDays(today,currentDay) < 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 }

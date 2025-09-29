@@ -152,7 +152,6 @@ public class AttendanceController {
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		// 勤怠フォームの生成
-		System.out.println("あああ"+attendanceManagementDtoList.get(0).getTrainingStartTime());
 
 		AttendanceForm attendanceForm = studentAttendanceService
 				.setAttendanceForm(attendanceManagementDtoList);
@@ -178,33 +177,31 @@ public class AttendanceController {
 	@RequestMapping(path = "/update", params = "complete", method = RequestMethod.POST)
 	public String complete(AttendanceForm attendanceForm, BindingResult result, Model model)
 			throws ParseException {
+        
 		Date today = attendanceUtil.getTrainingDate();
 		studentAttendanceService.setTrainingTime(attendanceForm);//(時)(分)から出勤、退勤時間をセット
-
-
-		
 		
 		for(DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
 			Date currentDay = dateUtil.parse(dailyAttendanceForm.getTrainingDate());
 
-			if(studentAttendanceService.isBefore(today, currentDay)) {
+			if(studentAttendanceService.isBeforeAndWorkDayCheck(today, currentDay)) {
 				validator.validate(dailyAttendanceForm, result);
 			}else {
+
 			}
 		}
-			attendanceForm.getAttendanceList().stream().forEach(System.out::println);
+		attendanceForm.getAttendanceList().stream().forEach(System.out::println);
 
-			System.out.println("エラーカウント" + result.getErrorCount());
+		System.out.println("エラーカウント" + result.getErrorCount());
 
-			if(result.hasErrors()) {
-				//resultにエラーがある場合、リスト再描画
-				List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
-						.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
-				model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
-				model.addAttribute("message","入力内容が不正です");
-				return "attendance/detail";
+		if(result.hasErrors()) {
+			//resultにエラーがある場合、リスト再描画
+			List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
+					.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
+			model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
+			model.addAttribute("message","入力内容が不正です");
 
-			}
+		}else {
 
 			//resultにエラーがない場合、DB更新してリスト再描画
 			String message = studentAttendanceService.update(attendanceForm);
@@ -212,6 +209,7 @@ public class AttendanceController {
 					.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 			model.addAttribute("message", message);
 			model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
-			return "attendance/detail";
 		}
+		return "attendance/detail";
 	}
+}

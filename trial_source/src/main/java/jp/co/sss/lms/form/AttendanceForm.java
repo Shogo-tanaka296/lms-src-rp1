@@ -3,7 +3,6 @@ package jp.co.sss.lms.form;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import jakarta.validation.Valid;
 import lombok.Data;
 
 /**
@@ -38,6 +37,6 @@ public class AttendanceForm {
 	private LinkedHashMap<Integer, String> selectMinute ;
 	
 	/** 日次の勤怠フォームリスト */
-	private List<@Valid DailyAttendanceForm> attendanceList;
+	private List<DailyAttendanceForm> attendanceList;
 
 }

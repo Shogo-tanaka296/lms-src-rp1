@@ -9,7 +9,6 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
@@ -298,7 +297,7 @@ public class StudentAttendanceService {
 	 * @return 完了メッセージ
 	 * @throws ParseException
 	 */
-	@Validated
+
 	public String update(AttendanceForm attendanceForm) throws ParseException {
 
 		Integer lmsUserId = loginUserUtil.isStudent() ? loginUserDto.getLmsUserId()
@@ -370,6 +369,7 @@ public class StudentAttendanceService {
 
 			
 		}
+		
 		// 登録・更新処理
 		for (TStudentAttendance tStudentAttendance : tStudentAttendanceList) {
 			if (tStudentAttendance.getStudentAttendanceId() == null) {
@@ -405,7 +405,12 @@ public class StudentAttendanceService {
 			return false;
 		}
 	}
-	//9月26日　Task27関連 田中追加
+	/**
+	 * 9月26日　Task27関連 田中追加
+	 * フォームで選択した(時)(分)を成形して出勤、退勤時間にセット
+	 * @param attendanceForm
+	 * @return
+	 */
 	public AttendanceForm setTrainingTime(AttendanceForm attendanceForm) {
 		for(DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
 			Integer startHour =dailyAttendanceForm.getTrainingStartTimeHour();
@@ -419,7 +424,7 @@ public class StudentAttendanceService {
 							(attendanceUtil.timeSetString(startHour, startMinute));
 				}
 			}catch (IllegalArgumentException e){
-				System.out.println(dailyAttendanceForm.getTrainingDate() + "startどちらかnull");
+
 			}
 			try {
 				if(endHour != null && endMinute != null) {
@@ -427,37 +432,28 @@ public class StudentAttendanceService {
 							(attendanceUtil.timeSetString(endHour, endMinute));
 				}
 			}catch (IllegalArgumentException e){
-				System.out.println(dailyAttendanceForm.getTrainingDate() + "endどちらかnull");
+
 			}
 		}
 		return attendanceForm;
 	}
-	public boolean isBefore(Date today,Date currentDay) {
-		String DayOfTheWeek = dateUtil.getDayOfTheWeekShort(currentDay);
-		boolean dayOfWeek;
-		if(DayOfTheWeek.equals("土")||DayOfTheWeek.equals("日")) {
-			dayOfWeek = false;
-		} else {
-			dayOfWeek = true;
-		}
-		Integer courseId = loginUserDto.getCourseId();
-		boolean isWorkDay = attendanceUtil.isWorkDay(courseId, currentDay);
-		if(dateUtil.differenceDays(currentDay, today) < 0 && isWorkDay && dayOfWeek) {//!status.equals("1") && 
-				return true;
-		} else {
-			return false;
-		}
+	
+	/**
+	 * 日次勤怠リストの日付が今日より過去か、研修日か、休日でないかを判定
+	 * @param today
+	 * @param currentDay
+	 * @return boolean
+	 */
+	public boolean isBeforeAndWorkDayCheck(Date today,Date currentDay) {
+		
+		boolean isBefore = attendanceUtil.isBefore(today, currentDay); //過去日か
+		boolean isWorkDay = attendanceUtil.isWorkDay(loginUserDto.getCourseId(), currentDay); //研修日か
+		String strDayOfTheWeek = dateUtil.getDayOfTheWeekShort(currentDay);
+		boolean isDayOfWeek = (!(strDayOfTheWeek.equals("土")||strDayOfTheWeek.equals("日")));
+		
+		return isBefore && isWorkDay && isDayOfWeek;
 	}
-	
-		//	public boolean isPastDay(String thisDay) {
-		//		attendanceUtil.getHourMap()
-		//		if() {
-		//		return true;
-		//	}else {
-		//		
-		//		return false;
-		//	}
-		//	
 
-	
+
+
 }
