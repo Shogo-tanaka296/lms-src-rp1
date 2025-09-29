@@ -5,15 +5,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
 import jp.co.sss.lms.form.AttendanceForm;
@@ -48,7 +50,7 @@ public class AttendanceController {
 	AttendanceUtil attendanceUtil;
 	
 	@Autowired
-	private SmartValidator validator;
+	private Validator validator;
 
 	/**
 	 * 勤怠管理画面 初期表示
@@ -185,9 +187,15 @@ public class AttendanceController {
 			Date currentDay = dateUtil.parse(dailyAttendanceForm.getTrainingDate());
 
 			if(studentAttendanceService.isBeforeAndWorkDayCheck(today, currentDay)) {
-				validator.validate(dailyAttendanceForm, result);
-			}else {
-
+				Set<ConstraintViolation<DailyAttendanceForm>> violations = 
+				validator.validate(dailyAttendanceForm);
+				
+				for(ConstraintViolation<DailyAttendanceForm> violation :violations) {
+					int index = attendanceForm.getAttendanceList().indexOf(dailyAttendanceForm);
+					result.rejectValue
+					("attendanceList[" + index + "]." + violation.getPropertyPath(), violation.getMessage()
+					);
+				}
 			}
 		}
 		attendanceForm.getAttendanceList().stream().forEach(System.out::println);

@@ -69,16 +69,19 @@ public class DailyAttendanceForm {
 
 	@AssertTrue(message = "{attendance.trainingTimeRange}")
 	public boolean isTrainingTimeRange() { 
-		boolean startTime = trainingStartTime != null && trainingStartTime != null; 
-		boolean endTime   = trainingEndTime != null && trainingEndTime != null;
-		
+		//個別のnullチェックは他メソッドに任せて今回はスルー
+		boolean startTime = trainingStartTime == null || trainingStartTime == null; 
+		boolean endTime   = trainingEndTime == null || trainingEndTime == null;
+		if(startTime || endTime) {
+			return true;
+		}
 		
 		//分に直して比べる
 		Integer startMin = (trainingStartTimeHour * 60) + trainingStartTimeMinute;
 		Integer endMin= (trainingEndTimeHour *60) + trainingEndTimeMinute;
-		boolean endAfterStart = startMin < endMin;
-		
-		return startTime && endTime && endAfterStart;
+
+		//出勤時間(startMin) < 退勤時間(endMin)ならスルー
+		return startMin < endMin ;
 	}
 	
 	/**9月29日
@@ -88,11 +91,21 @@ public class DailyAttendanceForm {
 	*/
 	@AssertTrue(message ="{attendance.punchInEmpty}")
 	public boolean isPunchInEmpty() {
+		//個別のnullチェックは他メソッドに任せて今回はスルー
+		boolean startTime = trainingStartTime == null || trainingStartTime == null; 
+		boolean endTime   = trainingEndTime == null || trainingEndTime == null;
+		if(startTime || endTime) {
+			return true;
+		}
+		
 		boolean isStartEmpty = 
 				trainingStartTimeHour != null && trainingStartTimeMinute != null;
 		boolean isEndEmpty   =
 				trainingEndTimeHour != null && trainingEndTimeMinute != null;
-		return !(isStartEmpty && !isEndEmpty);
+		if(isStartEmpty && !isEndEmpty) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**9月29日追加
